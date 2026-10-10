@@ -10,8 +10,10 @@ GITHUB_BRANCH = "main"
 GITHUB_FILE = "wishes.json"
 ALLOWED_ORIGIN = "https://mhasan-exe.github.io"
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "WISH_RATE_LIMITER"
-type = "ratelimit"
 namespace_id = "38190472"
-simple = { limit = 5, period = 60 }
+
+	[ratelimits.simple]
+	limit = 5
+	period = 60

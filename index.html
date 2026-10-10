@@ -351,7 +351,7 @@
                     <p>Write down one thing you hope for this year and send it to the birthday guestbook.</p>
                     <p class="wish-disclosure">Your wish will be added to the public GitHub repository. Please don't include private details.</p>
                 </div>
-                <form class="wish-form" id="wish-form">
+                <form class="wish-form" id="wish-form" data-endpoint="https://rayyan-birthday-wish.YOUR_SUBDOMAIN.workers.dev">
                     <label for="birthday-wish">Your wish</label>
                     <textarea id="birthday-wish" name="wish" maxlength="1200" placeholder="This year, I hope..." required></textarea>
                     <div class="wish-honeypot" aria-hidden="true">
@@ -375,7 +375,6 @@
     <div id="celebration" aria-live="polite" class="tiny-note" style="position:absolute;left:-9999px"></div>
     <div id="escape-status" aria-live="polite" class="tiny-note" style="position:absolute;left:-9999px"></div>
     <script>
-        const WISH_ENDPOINT = 'https://rayyan-birthday-wish.YOUR_SUBDOMAIN.workers.dev';
         const celebration = document.getElementById('celebration');
         const escapeButton = document.getElementById('escape-button');
         const escapeStatus = document.getElementById('escape-status');
@@ -415,17 +414,18 @@
             const form = event.currentTarget;
             const wish = document.getElementById('birthday-wish').value.trim();
             const status = document.getElementById('wish-status');
+            const endpoint = form.dataset.endpoint;
             if (!wish) {
                 status.textContent = 'Write your wish first.';
                 return;
             }
-            if (WISH_ENDPOINT.includes('YOUR_SUBDOMAIN')) {
+            if (!endpoint || endpoint.includes('YOUR_SUBDOMAIN')) {
                 status.textContent = 'The birthday guestbook is not connected yet.';
                 return;
             }
 
             try {
-                const response = await fetch(WISH_ENDPOINT, {
+                const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
