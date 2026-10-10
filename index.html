@@ -377,6 +377,7 @@
     <script>
         const celebration = document.getElementById('celebration');
         const escapeButton = document.getElementById('escape-button');
+        const escapeSlot = document.querySelector('.escape-slot');
         const escapeStatus = document.getElementById('escape-status');
         const classNote = document.getElementById('class-note');
         const classNoteToggle = document.getElementById('class-note-toggle');
@@ -473,15 +474,17 @@
             const maxTop = Math.max(12, window.innerHeight - buttonBounds.height - 12);
             const left = 12 + Math.random() * Math.max(0, maxLeft - 12);
             const top = 12 + Math.random() * Math.max(0, maxTop - 12);
+            document.body.appendChild(escapeButton);
             escapeButton.style.position = 'fixed';
             escapeButton.style.left = `${left}px`;
             escapeButton.style.top = `${top}px`;
-            escapeButton.style.zIndex = '60';
+            escapeButton.style.zIndex = '2147483000';
             escapeButton.style.transform = 'none';
             return false;
         }
 
         function returnButtonToSlot() {
+            escapeSlot.appendChild(escapeButton);
             escapeButton.style.position = '';
             escapeButton.style.left = '';
             escapeButton.style.top = '';
