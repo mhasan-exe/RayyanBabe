@@ -348,17 +348,17 @@
                 <div class="wish-copy">
                     <p class="section-kicker">A little birthday tradition</p>
                     <h2 id="wish-title">Make a birthday wish.</h2>
-                    <p>Write down one thing you hope for this year and send it to the birthday guestbook.</p>
-                    <p class="wish-disclosure">Your wish will be added to the public GitHub repository. Please don't include private details.</p>
+                    <p>Write down one thing you hope for this year and send it straight to my inbox.</p>
+                    <p class="wish-disclosure">Your wish will be emailed to muhammadhasanm44@gmail.com through FormSubmit. It won't be posted on this page. Please don't include private details.</p>
                 </div>
-                <form class="wish-form" id="wish-form" data-endpoint="https://rayyan-birthday-wish.rayyan47999.workers.dev">
+                <form class="wish-form" id="wish-form" data-endpoint="https://formsubmit.co/ajax/muhammadhasanm44@gmail.com">
                     <label for="birthday-wish">Your wish</label>
                     <textarea id="birthday-wish" name="wish" maxlength="1200" placeholder="This year, I hope..." required></textarea>
                     <div class="wish-honeypot" aria-hidden="true">
-                        <label for="wish-website">Leave this field empty</label>
-                        <input id="wish-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                        <label for="wish-honey">Leave this field empty</label>
+                        <input id="wish-honey" name="_honey" type="text" tabindex="-1" autocomplete="off">
                     </div>
-                    <label class="wish-consent"><input id="wish-public-consent" type="checkbox" required> I understand this wish will be public.</label>
+                    <label class="wish-consent"><input id="wish-email-consent" type="checkbox" required> I agree to email this wish to the birthday host.</label>
                     <div class="wish-form-actions">
                         <button class="button" type="submit">Send my wish <span aria-hidden="true">↗</span></button>
                         <p id="wish-status" role="status" aria-live="polite"></p>
@@ -420,30 +420,35 @@
                 status.textContent = 'Write your wish first.';
                 return;
             }
-            if (!endpoint || endpoint.includes('YOUR_SUBDOMAIN')) {
-                status.textContent = 'The birthday guestbook is not connected yet.';
+            if (!endpoint || !endpoint.startsWith('https://formsubmit.co/ajax/')) {
+                status.textContent = 'The email guestbook is not configured yet.';
                 return;
             }
 
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({
+                        name: 'Birthday guestbook',
+                        _subject: 'A birthday wish for you',
                         wish,
-                        website: document.getElementById('wish-website').value
+                        _honey: document.getElementById('wish-honey').value
                     })
                 });
                 const result = await response.json().catch(() => ({}));
-                if (!response.ok) {
-                    throw new Error(result.error || 'The guestbook could not save your wish.');
+                if (!response.ok || result.success === false || result.success === 'false') {
+                    throw new Error(result.message || 'The email service could not send your wish.');
                 }
-                status.textContent = 'Thanks! Your wish is in the public birthday guestbook.';
+                status.textContent = 'Wish submitted. If this is the first one, confirm FormSubmit’s activation email so wishes can arrive.';
                 form.reset();
-                celebrate('Wish added to the guestbook!');
+                celebrate('Wish sent!');
             } catch (error) {
                 status.textContent = error.message === 'Failed to fetch'
-                    ? 'Could not reach the guestbook. Please try again later.'
+                    ? 'Could not reach the email service. Please try again later.'
                     : error.message;
             }
         });
