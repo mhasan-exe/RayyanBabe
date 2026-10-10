@@ -153,6 +153,20 @@
             font-size: 17px;
             transform: rotate(-3deg);
         }
+        .photo-snapshot {
+            position: absolute;
+            z-index: 3;
+            bottom: -30px;
+            left: -42px;
+            width: 142px;
+            margin: 0;
+            padding: 7px 7px 22px;
+            background: white;
+            box-shadow: 0 10px 28px rgba(29, 48, 43, .2);
+            transform: rotate(-7deg);
+        }
+        .photo-snapshot img { width: 100%; aspect-ratio: 3 / 4.5; display: block; object-fit: cover; }
+        .photo-snapshot figcaption { position: absolute; right: 0; bottom: 3px; left: 0; color: var(--muted); font-family: var(--display); font-size: 11px; text-align: center; }
         .photo-note-toggle {
             position: absolute;
             z-index: 5;
@@ -210,17 +224,35 @@
         h2 { margin-bottom: 0; font-family: var(--display); font-size: clamp(30px, 4vw, 44px); line-height: 1.1; }
         .wish {
             display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 24px;
+            grid-template-columns: minmax(190px, .75fr) minmax(0, 1.25fr);
+            align-items: start;
+            gap: 32px;
             margin: 0 5.5% 52px;
             padding: 27px 30px;
             background: var(--green);
         }
         .wish h2 { margin-bottom: 6px; font-size: 27px; }
-        .wish p { margin: 0; color: #53645b; font-size: 13px; }
-        .wish .button { background: var(--red); }
-        .wish .button:hover { background: #d65342; }
+        .wish-copy p { margin: 10px 0 0; color: #53645b; font-size: 13px; line-height: 1.6; }
+        .wish-form { display: grid; gap: 10px; }
+        .wish-form label { color: var(--ink); font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .wish-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid rgba(29, 48, 43, .32);
+            border-radius: 2px;
+            background: var(--paper);
+            color: var(--ink);
+            font: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+        }
+        .wish-form textarea:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+        .wish-form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+        .wish-form .button { background: var(--red); }
+        .wish-form .button:hover { background: #d65342; }
+        #wish-status { min-height: 1.5em; margin: 0; color: #40554b; font-size: 12px; }
         footer { min-height: 68px; display: flex; justify-content: space-between; align-items: center; gap: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
         .heart { color: var(--red); }
         .burst {
@@ -242,11 +274,11 @@
             .intro { font-size: 15px; }
             .photo-wrap { width: min(78%, 310px); }
             .photo-caption { right: -18px; }
+            .photo-snapshot { left: -24px; width: 116px; }
             .birthday-letter { padding: 42px 7% 48px; }
             .letter-copy { font-size: 15px; }
             .class-note { right: 14px; bottom: 14px; width: min(340px, calc(100vw - 28px)); }
-            .wish { grid-template-columns: 1fr; margin: 0 7% 38px; padding: 23px; }
-            .wish .button { justify-self: start; }
+            .wish { grid-template-columns: 1fr; gap: 18px; margin: 0 7% 38px; padding: 23px; }
             footer { font-size: 10px; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -281,6 +313,10 @@
                     <div class="photo-frame">
                         <img src="Screenshot%202026-10-10%20094813.png" alt="My friend dressed up in a charcoal suit and bow tie" fetchpriority="high">
                     </div>
+                    <figure class="photo-snapshot">
+                        <img src="Screenshot%202026-10-10%20095918.png" alt="My friend in a beanie and scarf, smiling at the camera" loading="lazy">
+                        <figcaption>Another classic.</figcaption>
+                    </figure>
                     <figcaption class="photo-caption">Birthday legend, confirmed.</figcaption>
                 </figure>
                 <aside class="class-note" id="class-note" aria-label="Birthday note" hidden>
@@ -305,11 +341,19 @@
             </section>
 
             <section class="wish" aria-labelledby="wish-title">
-                <div>
+                <div class="wish-copy">
+                    <p class="section-kicker">A little birthday tradition</p>
                     <h2 id="wish-title">Make a birthday wish.</h2>
-                    <p>Go on. The universe has been notified.</p>
+                    <p>Write down one thing you hope for this year, then save it as a little keepsake.</p>
                 </div>
-                <button class="button" id="wish-button" type="button">Wish granted-ish <span aria-hidden="true">✦</span></button>
+                <form class="wish-form" id="wish-form">
+                    <label for="birthday-wish">Your wish</label>
+                    <textarea id="birthday-wish" name="wish" maxlength="1200" placeholder="This year, I hope..." required></textarea>
+                    <div class="wish-form-actions">
+                        <button class="button" type="submit">Save wish to a file <span aria-hidden="true">↗</span></button>
+                        <p id="wish-status" role="status" aria-live="polite"></p>
+                    </div>
+                </form>
             </section>
         </main>
 
@@ -354,7 +398,44 @@
         }
 
         document.getElementById('celebrate').addEventListener('click', () => celebrate('Birthday sparkles!'));
-        document.getElementById('wish-button').addEventListener('click', () => celebrate('Your wish is on its way!'));
+
+        document.getElementById('wish-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const wish = document.getElementById('birthday-wish').value.trim();
+            const status = document.getElementById('wish-status');
+            if (!wish) {
+                status.textContent = 'Write your wish first.';
+                return;
+            }
+
+            const contents = `Birthday wish\n\n${wish}\n`;
+            try {
+                if (typeof window.showSaveFilePicker === 'function') {
+                    const fileHandle = await window.showSaveFilePicker({
+                        suggestedName: 'birthday-wish.txt',
+                        types: [{ description: 'Text file', accept: { 'text/plain': ['.txt'] } }]
+                    });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(contents);
+                    await writable.close();
+                    status.textContent = 'Your wish was saved to birthday-wish.txt.';
+                } else {
+                    const file = new Blob([contents], { type: 'text/plain;charset=utf-8' });
+                    const downloadUrl = URL.createObjectURL(file);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = downloadUrl;
+                    downloadLink.download = 'birthday-wish.txt';
+                    downloadLink.click();
+                    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+                    status.textContent = 'Your wish is downloading as birthday-wish.txt.';
+                }
+                celebrate('Wish saved!');
+            } catch (error) {
+                status.textContent = error.name === 'AbortError'
+                    ? 'No worries. Your wish is still here.'
+                    : 'Could not save the file. Please try again.';
+            }
+        });
 
         function attemptEscape() {
             if (catchAllowed) return true;
