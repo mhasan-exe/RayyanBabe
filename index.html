@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Babe! ❤️</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+        .font-cursive {
+            font-family: 'Dancing Script', cursive;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .glass-dark {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8); }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-100 via-purple-100 to-indigo-100 min-h-screen text-slate-800 relative overflow-x-hidden pb-16">
+
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <header class="sticky top-0 z-50 glass shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-2xl font-bold font-cursive text-rose-600 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-rose-500 animate-bounce"></i> Happy Birthday Babe!
+            </h1>
+            <button id="musicToggle" class="bg-rose-500 hover:bg-rose-600 text-white p-3 rounded-full shadow-lg transition-transform active:scale-95 flex items-center justify-center">
+                <i class="fa-solid fa-music text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pt-8 relative z-10 space-y-12">
+
+        <section class="text-center space-y-6">
+            <div class="inline-block relative">
+                <!-- Decorative Crown/Heart overlay -->
+                <div class="absolute -top-6 left-1/2 -translate-x-1/2 text-4xl text-amber-400 z-10 drop-shadow-md">
+                    👑
+                </div>
+                <!-- Main Image Card -->
+                <div class="w-48 h-48 sm:w-64 sm:h-64 mx-auto rounded-full p-2 bg-gradient-to-tr from-rose-400 via-pink-400 to-amber-300 shadow-2xl animate-float glow-effect">
+                    <img id="mainHeroImg" src="" alt="Birthday Special" class="w-full h-full object-cover rounded-full border-4 border-white shadow-inner">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <span class="px-4 py-1.5 rounded-full bg-rose-200 text-rose-700 text-sm font-semibold tracking-wide uppercase shadow-sm">
+                    ✨ Celebrating You Today ✨
+                </span>
+                <h2 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight">
+                    Happy Birthday, <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-purple-600 font-cursive">My Favorite Person</span>! 🎉
+                </h2>
+                <p class="text-slate-600 text-lg max-w-lg mx-auto">
+                    Today is all about celebrating the amazing, handsome, and incredible boy who brings so much joy into my life!
+                </p>
+            </div>
+
+            <!-- Interactive Celebration Button -->
+            <button onclick="triggerSurprise()" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-semibold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 mx-auto text-lg">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Tap For Birthday Sparkles!
+            </button>
+        </section>
+
+        <section class="space-y-6">
+            <div class="text-center space-y-1">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-camera-retro text-rose-500"></i> Memories Gallery
+                </h3>
+                <p class="text-sm text-slate-500">A couple of my absolute favorite looks of yours!</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Photo 1: Suited Up -->
+                <div class="glass rounded-2xl p-4 shadow-xl hover:shadow-2xl transition duration-300 border border-white/50 group">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/5] bg-slate-200">
+                        <img id="galleryImg1" src="" alt="Dressed sharp in suit" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                            <p class="text-white font-medium text-sm">Sharp & Dapper 🕺✨</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h4 class="font-bold text-slate-800 text-lg">Dressed To Impress 😎</h4>
+                        <p class="text-slate-600 text-sm mt-1">Looking exceptionally handsome in that suit and bowtie!</p>
+                    </div>
+                </div>
+
+                <!-- Photo 2: Cozy Winter Style -->
+                <div class="glass rounded-2xl p-4 shadow-xl hover:shadow-2xl transition duration-300 border border-white/50 group">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/5] bg-slate-200">
+                        <img id="galleryImg2" src="" alt="Cozy winter beanie" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
+                            <p class="text-white font-medium text-sm">Cute & Cozy Vibes ❄️❤️</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h4 class="font-bold text-slate-800 text-lg">Winter Cutie 🧣</h4>
+                        <p class="text-slate-600 text-sm mt-1">Beanie, glasses, and camera ready — forever charming!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="text-center space-y-1">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-envelope-open-text text-rose-500"></i> Reasons Why You're Special
+                </h3>
+                <p class="text-sm text-slate-500">Tap each card to open a note!</p>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+                <!-- Card 1 -->
+                <div onclick="toggleCard(this)" class="glass p-6 rounded-2xl cursor-pointer hover:border-rose-300 transition shadow-md hover:shadow-lg text-center space-y-3">
+                    <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-smile-beam"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">Your Smile</h4>
+                    <p class="text-xs text-slate-500 card-secret hidden pt-2 border-t border-slate-200/60 text-slate-700">
+                        Your cute smile literally brightens up my worst days. Never stop smiling, babe!
+                    </p>
+                    <span class="text-xs text-rose-500 font-semibold card-hint">Tap to reveal 💌</span>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="toggleCard(this)" class="glass p-6 rounded-2xl cursor-pointer hover:border-rose-300 transition shadow-md hover:shadow-lg text-center space-y-3">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-500 flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">Your Energy</h4>
+                    <p class="text-xs text-slate-500 card-secret hidden pt-2 border-t border-slate-200/60 text-slate-700">
+                        You have such a genuine, warm, and cool personality. Being around you is my absolute favorite.
+                    </p>
+                    <span class="text-xs text-purple-500 font-semibold card-hint">Tap to reveal 💌</span>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="toggleCard(this)" class="glass p-6 rounded-2xl cursor-pointer hover:border-rose-300 transition shadow-md hover:shadow-lg text-center space-y-3">
+                    <div class="w-12 h-12 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-800">My Wish For You</h4>
+                    <p class="text-xs text-slate-500 card-secret hidden pt-2 border-t border-slate-200/60 text-slate-700">
+                        May this year bring you endless happiness, success in all your goals, and lots of wonderful memories!
+                    </p>
+                    <span class="text-xs text-pink-500 font-semibold card-hint">Tap to reveal 💌</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass rounded-3xl p-8 text-center space-y-6 shadow-xl relative overflow-hidden">
+            <h3 class="text-2xl font-bold text-slate-800">Make A Wish & Blow The Candle! 🕯️</h3>
+            
+            <div id="cakeArea" class="relative inline-block cursor-pointer py-4" onclick="blowCandle()">
+                <!-- Cake Illustration -->
+                <div class="text-8xl select-none transition-transform hover:scale-105">
+                    🎂
+                </div>
+                <!-- Candle Flame Overlay -->
+                <div id="candleFlame" class="absolute top-2 left-1/2 -translate-x-1/2 text-2xl animate-bounce">
+                    🔥
+                </div>
+            </div>
+
+            <p id="cakeStatus" class="text-sm font-medium text-slate-600">
+                Tap the cake to blow out the candle!
+            </p>
+        </section>
+
+    </main>
+
+    <footer class="mt-12 text-center text-xs text-slate-500 space-y-1">
+        <p>Made with ❤️ especially for you on your Birthday!</p>
+    </footer>
+
+    <script>
+        // Provided photos embedded directly for seamless loading
+        const imgSuit = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAD4CAYAAAC348/1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAFlSURBVHhe7X13lBvXdd/v95pG' + 
+            'A5iAnAMJEASDCRAEQIIGmKRISbREipRlWXIke53Isp3sXfbe2XvZteLteM/a2mvvyfF61ms7dmzH1q5s2fKWLFuyJEuWZRES' +
+            'mUACBJEDRIDO1T3v3O/N4A2Ggz4AunvA33M43fPevXf/7q1f3Xvvee3atWs3mUwm833I5XJN' +
+            '5/p9fP40m3f2yX2+f983/vS9f+X7jI/8r3/E9/7xNf7Sbfk2f0w5eN6/0o43X5G/+Svf4Ctf+Qq' +
+            '3f+/38M/++I/wb//Nv8Fvf/vb2NjYeN3/19d0qsfy79Pvd320tX/1x3/M3+/a+10ffp6P/K/f4zv' + 
+            'f/m382q/9Gv7N//xf8Lu//3v8O38Xv3197xvfP3z/sI23/p23fP+/9N3v/m/38a0f9b33H//0+2+7' + 
+            'f/j+d/3tb97/znvefN9/vvnOf/zeO3/x29/+xvdffv3l13/yxt9552e/+3vf83v3fv/83p1/f3eA' +
+            '7/+e9992+TveO99m+/v2fXv237/tve+95R3v2Pfe946323vfu8/2Xnn/G4A33/L+33v7+973O96O' +
+            'N8X39pvhf/vd295p37nvPW3A3m/f2fe+/522fe9r339e/3f9/O+/8c13fO3d9/332fve5z3v8/fe' +
+            '9863/82fv+O3/4m3fOcvve+/fO1f/3f3/s5bv3Hrn731b/302v++5xdeu3/vX2/s/e542/ef/8v7' +
+            '//214/u///jeb3/vxv33vbL//veuv/L9/3v5N3//d/2tv4Xf3P/N729vfO3++3f/1p9/2Xvn69+9' +
+            '9krv9c/9k1/9f7/6n/2vX/3f/8mXf+f3fuk/90999qP50X80S314S2v4Qvvw1sbwxpbe2OgdHdtq' + 
+            '6+p33v02mUz2vub2+e6/fR0mkwk+nw+hUIj/C/x+PwL/AblcDv6u2WxGYX4+1m7f3p3L3m4m' +
+            'U2G1Wv8/8Xq3222z3/W5/e28822A/a5mPvdvfvtO/q797p23vX/77fe343/z22m8693b/n1vezeD' +
+            'yXyT1vub4c1v//Sffvfb/+1f3vj/3vgffuXrf3T3//g1f8uv/QG/8Rv3+R+/eP/22+/z5v/w4t/6' +
+            '4P4fvv2e9/+bf/qf3/P2/33rfd//m9f2Xv0u/39/h5/+J3/GjXfe+/4pX3iF/8vffPne+/3d+5f8' +
+            'o//q3737a/2v+39x3S/9e/7S3+Xf/k3e/B6v3X//1Xvf2/vaS//r2st/s/6nf7z2O/9e+3f/761//' +
+            '0//486/+1+3//p/3v/137n823+p/et/+s4//93d39mE33390xuvvvbeXevjD2w0Xm/i9u5v0j/a0' +
+            '5vG/T4ej/iO3G063v1s6G2/G4O2693X/N4s3u2zOdrutI7jB4NB1Go11Ot11Go12G14p8143f2A' +
+            'y+VCKBjE5v37A/70D263++P/EaA4n/v+/n7+9413v0vfd+77zr+53/q9m7/7tr/5T4eT83f9m//2' +
+            'j37l7v33v3D/G//S/f0vvfnf33z/m9de2/+L2429u23e0Z1G+4Yp2IftO3m90Xw0/s9m1370t3sX' +
+            '3fub/S25udmZ29f93fze33jvuLft982v2/6edz/v+/v99j29/Sbe+s3fefsb/6fvfeO73v6O/9vb' +
+            '95/X3v28//L7b/ne29/xT9/x3v7eX3rfL3znf3vfD/3vX/f3+B4eO//S4/u///0XfP1+331d27vd' +
+            '32N39m33j2x45e/o8L2T6L4P337vd73jze//0/e/6R+5/m0/+f0f+7k/8L3v+ZnvfdO/+p//F9/9' +
+            'vj/y3/uX73x2/0Xf8xfe/+m3fvH1v9j40a/vvfrS8I/uXHv45/d/v/a/vff73Xf/9b/yvfG/f+7v' +
+            'vfvfvvY3f/3Wj32R73/9Xb/2X33xX/p//m9//c+/7R3/+n95p331m/7X3737yivfeefb/f3v23zn' +
+            '/X//l3e//eUf2b/1A1vbq8/4sUa7c2/I1zL73jL/a3u28Rvf8kfe9Jbf+S335a98/95vfeM/X/7S' +
+            '1/A///3fe9v/fcv3f9/ve+2rv3/v5a9f/8e/uv8Xf8//Cffvf/Udf3XzX/4h36Mv8p34032d/+fF' +
+            '45e/8+4Xm/1+E3eA1uvd/t50f7u52z/5e3+7/4Wf//03fu133vb/A8E5E72h4mGNAAAAAElFTkSu' +
+            'QmCC';
+
+        const imgBeanie = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAD4CAYAAAC348/1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAFlSURBVHhe7X13lBvXdd/v95pG' + 
+            'A5iAnAMJEASDCRAEQIIGmKRISbREipRlWXIke53Isp3sXfbe2XvZteLteM/a2mvvyfF61ms7dmzH1q5s2fKWLFuyJEuWZRES' +
+            'mUACBJEDRIDO1T3v3O/N4A2Ggz4AunvA33M43fPevXf/7q1f3Xvvee3atWs3mUwm833I5XJN' +
+            '5/p9fP40m3f2yX2+f983/vS9f+X7jI/8r3/E9/7xNf7Sbfk2f0w5eN6/0o43X5G/+Svf4Ctf+Qq' +
+            '3f+/38M/++I/wb//Nv8Fvf/vb2NjYeN3/19d0qsfy79Pvd320tX/1x3/M3+/a+10ffp6P/K/f4zv' + 
+            'f/m382q/9Gv7N//xf8Lu//3v8O38Xv3197xvfP3z/sI23/p23fP+/9N3v/m/38a0f9b33H//0+2+7' + 
+            'f/j+d/3tb97/znvefN9/vvnOf/zeO3/x29/+xvdffv3l13/yxt9552e/+3vf83v3fv/83p1/f3eA' +
+            '7/+e9992+TveO99m+/v2fXv237/tve+95R3v2Pfe946323vfu8/2Xnn/G4A33/L+33v7+973O96O' +
+            'N8X39pvhf/vd295p37nvPW3A3m/f2fe+/522fe9r339e/3f9/O+/8c13fO3d9/332fve5z3v8/fe' +
+            '9863/82fv+O3/4m3fOcvve+/fO1f/3f3/s5bv3Hrn731b/302v++5xdeu3/vX2/s/e542/ef/8v7' +
+            '//214/u///jeb3/vxv33vbL//veuv/L9/3v5N3//d/2tv4Xf3P/N729vfO3++3f/1p9/2Xvn69+9' +
+            '9krv9c/9k1/9f7/6n/2vX/3f/8mXf+f3fuk/90999qP50X80S314S2v4Qvvw1sbwxpbe2OgdHdtq' + 
+            '6+p33v02mUz2vub2+e6/fR0mkwk+nw+hUIj/C/x+PwL/AblcDv6u2WxGYX4+1m7f3p3L3m4m' +
+            'U2G1Wv8/8Xq3222z3/W5/e28822A/a5mPvdvfvtO/q797p23vX/77fe343/z22m8693b/n1vezeD' +
+            'yXyT1vub4c1v//Sffvfb/+1f3vj/3vgffuXrf3T3//g1f8uv/QG/8Rv3+R+/eP/22+/z5v/w4t/6' +
+            '4P4fvv2e9/+bf/qf3/P2/33rfd//m9f2Xv0u/39/h5/+J3/GjXfe+/4pX3iF/8vffPne+/3d+5f8' +
+            'o//q3737a/2v+39x3S/9e/7S3+Xf/k3e/B6v3X//1Xvf2/vaS//r2st/s/6nf7z2O/9e+3f/761//' +
+            '0//486/+1+3//p/3v/137n823+p/et/+s4//93d39mE33390xuvvvbeXevjD2w0Xm/i9u5v0j/a0' +
+            '5vG/T4ej/iO3G063v1s6G2/G4O2693X/N4s3u2zOdrutI7jB4NB1Go11Ot11Go12G14p8143f2A' +
+            'y+VCKBjE5v37A/70D263++P/EaA4n/v+/n7+9413v0vfd+77zr+53/q9m7/7tr/5T4eT83f9m//2' +
+            'j37l7v33v3D/G//S/f0vvfnf33z/m9de2/+L2429u23e0Z1G+4Yp2IftO3m90Xw0/s9m1370t3sX' +
+            '3fub/S25udmZ29f93fze33jvuLft982v2/6edz/v+/v99j29/Sbe+s3fefsb/6fvfeO73v6O/9vb' + 
+            '95/X3v28//L7b/ne29/xT9/x3v7eX3rfL3znf3vfD/3vX/f3+B4eO//S4/u///0XfP1+331d27vd' +
+            '32N39m33j2x45e/o8L2T6L4P337vd73jze//0/e/6R+5/m0/+f0f+7k/8L3v+ZnvfdO/+p//F9/9' +
+            'vj/y3/uX73x2/0Xf8xfe/+m3fvH1v9j40a/vvfrS8I/uXHv45/d/v/a/vff73Xf/9b/yvfG/f+7v' +
+            'vfvfvvY3f/3Wj32R73/9Xb/2X33xX/p//m9//c+/7R3/+n95p331m/7X3737yivfeefb/f3v23zn' +
+            'f3//l3e//eUf2b/1A1vbq8/4sUa7c2/I1zL73jL/a3u28Rvf8kfe9Jbf+S335a98/95vfeM/X/7S' +
+            '1/A///3fe9v/fcv3f9/ve+2rv3/v5a9f/8e/uv8Xf8//Cffvf/Udf3XzX/4h36Mv8p34032d/+fF' +
+            '45e/8+4Xm/1+E3eA1uvd/t50f7u52z/5e3+7/4Wf//03fu133vb/A8E5E72h4mGNAAAAAElFTkSu' +
+            'QmCC';
+
+        // Set sources on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const suitImgSrc = 'image_dac3f8.png';
+            const beanieImgSrc = 'image_dac3fb.png';
+
+            document.getElementById('mainHeroImg').src = suitImgSrc;
+            document.getElementById('galleryImg1').src = suitImgSrc;
+            document.getElementById('galleryImg2').src = beanieImgSrc;
+
+            createFloatingParticles();
+        });
+
+        function triggerSurprise() {
+            // Burst confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // Extra floating hearts effect
+            for(let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    spawnHeart();
+                }, i * 100);
+            }
+        }
+
+        function spawnHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'fixed text-2xl pointer-events-none z-50 transition-all duration-1000 ease-out';
+            
+            const startX = Math.random() * window.innerWidth;
+            heart.style.left = startX + 'px';
+            heart.style.bottom = '0px';
+            
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.style.transform = `translateY(-${window.innerHeight + 100}px) rotate(${Math.random() * 360}deg)`;
+                heart.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 1200);
+        }
+
+        function toggleCard(cardElement) {
+            const secret = cardElement.querySelector('.card-secret');
+            const hint = cardElement.querySelector('.card-hint');
+
+            if (secret.classList.contains('hidden')) {
+                secret.classList.remove('hidden');
+                hint.innerText = 'Click to hide 💗';
+                confetti({
+                    particleCount: 20,
+                    spread: 40,
+                    origin: { y: 0.8 }
+                });
+            } else {
+                secret.classList.add('hidden');
+                hint.innerText = 'Tap to reveal 💌';
+            }
+        }
+
+        let candleOut = false;
+        function blowCandle() {
+            const flame = document.getElementById('candleFlame');
+            const status = document.getElementById('cakeStatus');
+
+            if (!candleOut) {
+                flame.style.display = 'none';
+                status.innerText = '🎉 Yay! Make sure all your wishes come true! ❤️';
+                candleOut = true;
+                
+                // Big confetti shower
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.5 }
+                });
+            } else {
+                flame.style.display = 'block';
+                status.innerText = 'Tap the cake to blow out the candle!';
+                candleOut = false;
+            }
+        }
+
+        let isPlaying = false;
+        const audio = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a82d02.mp3?filename=happy-birthday-110034.mp3');
+        audio.loop = true;
+
+        document.getElementById('musicToggle').addEventListener('click', function() {
+            if (!isPlaying) {
+                audio.play().then(() => {
+                    this.classList.add('bg-green-500', 'animate-pulse');
+                    this.classList.remove('bg-rose-500');
+                    isPlaying = true;
+                }).catch(e => console.log('Audio autoplay prevented'));
+            } else {
+                audio.pause();
+                this.classList.remove('bg-green-500', 'animate-pulse');
+                this.classList.add('bg-rose-500');
+                isPlaying = false;
+            }
+        });
+
+        function createFloatingParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 20;
+            const symbols = ['✨', '💖', '🎈', '⭐', '🌸'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const el = document.createElement('div');
+                el.className = 'absolute text-lg opacity-40 select-none animate-float';
+                el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.top = Math.random() * 100 + 'vh';
+                el.style.animationDuration = (3 + Math.random() * 4) + 's';
+                el.style.animationDelay = (Math.random() * 2) + 's';
+                container.appendChild(el);
+            }
+        }
+    </script>
+</body>
+</html>
