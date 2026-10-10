@@ -249,6 +249,10 @@
             resize: vertical;
         }
         .wish-form textarea:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+        .wish-disclosure { margin: 0; color: #40554b; font-size: 12px; line-height: 1.5; }
+        .wish-consent { display: flex; align-items: flex-start; gap: 8px; color: #40554b; font-size: 12px; line-height: 1.5; }
+        .wish-consent input { flex: 0 0 auto; margin: 2px 0 0; accent-color: var(--red); }
+        .wish-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
         .wish-form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
         .wish-form .button { background: var(--red); }
         .wish-form .button:hover { background: #d65342; }
@@ -344,13 +348,19 @@
                 <div class="wish-copy">
                     <p class="section-kicker">A little birthday tradition</p>
                     <h2 id="wish-title">Make a birthday wish.</h2>
-                    <p>Write down one thing you hope for this year, then save it as a little keepsake.</p>
+                    <p>Write down one thing you hope for this year and send it to the birthday guestbook.</p>
+                    <p class="wish-disclosure">Your wish will be added to the public GitHub repository. Please don't include private details.</p>
                 </div>
                 <form class="wish-form" id="wish-form">
                     <label for="birthday-wish">Your wish</label>
                     <textarea id="birthday-wish" name="wish" maxlength="1200" placeholder="This year, I hope..." required></textarea>
+                    <div class="wish-honeypot" aria-hidden="true">
+                        <label for="wish-website">Leave this field empty</label>
+                        <input id="wish-website" name="website" type="text" tabindex="-1" autocomplete="off">
+                    </div>
+                    <label class="wish-consent"><input id="wish-public-consent" type="checkbox" required> I understand this wish will be public.</label>
                     <div class="wish-form-actions">
-                        <button class="button" type="submit">Save wish to a file <span aria-hidden="true">↗</span></button>
+                        <button class="button" type="submit">Send my wish <span aria-hidden="true">↗</span></button>
                         <p id="wish-status" role="status" aria-live="polite"></p>
                     </div>
                 </form>
@@ -365,6 +375,7 @@
     <div id="celebration" aria-live="polite" class="tiny-note" style="position:absolute;left:-9999px"></div>
     <div id="escape-status" aria-live="polite" class="tiny-note" style="position:absolute;left:-9999px"></div>
     <script>
+        const WISH_ENDPOINT = 'https://rayyan-birthday-wish.YOUR_SUBDOMAIN.workers.dev';
         const celebration = document.getElementById('celebration');
         const escapeButton = document.getElementById('escape-button');
         const escapeStatus = document.getElementById('escape-status');
@@ -401,39 +412,38 @@
 
         document.getElementById('wish-form').addEventListener('submit', async (event) => {
             event.preventDefault();
+            const form = event.currentTarget;
             const wish = document.getElementById('birthday-wish').value.trim();
             const status = document.getElementById('wish-status');
             if (!wish) {
                 status.textContent = 'Write your wish first.';
                 return;
             }
+            if (WISH_ENDPOINT.includes('YOUR_SUBDOMAIN')) {
+                status.textContent = 'The birthday guestbook is not connected yet.';
+                return;
+            }
 
-            const contents = `Birthday wish\n\n${wish}\n`;
             try {
-                if (typeof window.showSaveFilePicker === 'function') {
-                    const fileHandle = await window.showSaveFilePicker({
-                        suggestedName: 'birthday-wish.txt',
-                        types: [{ description: 'Text file', accept: { 'text/plain': ['.txt'] } }]
-                    });
-                    const writable = await fileHandle.createWritable();
-                    await writable.write(contents);
-                    await writable.close();
-                    status.textContent = 'Your wish was saved to birthday-wish.txt.';
-                } else {
-                    const file = new Blob([contents], { type: 'text/plain;charset=utf-8' });
-                    const downloadUrl = URL.createObjectURL(file);
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = downloadUrl;
-                    downloadLink.download = 'birthday-wish.txt';
-                    downloadLink.click();
-                    window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
-                    status.textContent = 'Your wish is downloading as birthday-wish.txt.';
+                const response = await fetch(WISH_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        wish,
+                        website: document.getElementById('wish-website').value
+                    })
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(result.error || 'The guestbook could not save your wish.');
                 }
-                celebrate('Wish saved!');
+                status.textContent = 'Thanks! Your wish is in the public birthday guestbook.';
+                form.reset();
+                celebrate('Wish added to the guestbook!');
             } catch (error) {
-                status.textContent = error.name === 'AbortError'
-                    ? 'No worries. Your wish is still here.'
-                    : 'Could not save the file. Please try again.';
+                status.textContent = error.message === 'Failed to fetch'
+                    ? 'Could not reach the guestbook. Please try again later.'
+                    : error.message;
             }
         });
 

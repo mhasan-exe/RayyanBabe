@@ -1,0 +1,17 @@
+name = "rayyan-birthday-wish"
+main = "worker.js"
+compatibility_date = "2026-10-10"
+workers_dev = true
+
+[vars]
+GITHUB_OWNER = "mhasan-exe"
+GITHUB_REPO = "RayyanBabe"
+GITHUB_BRANCH = "main"
+GITHUB_FILE = "wishes.json"
+ALLOWED_ORIGIN = "https://mhasan-exe.github.io"
+
+[[unsafe.bindings]]
+name = "WISH_RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "38190472"
+simple = { limit = 5, period = 60 }
